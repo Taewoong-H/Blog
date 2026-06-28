@@ -42,13 +42,27 @@ function getPostFileNames(): string[] {
     return [];
   }
 
-  return fs
-    .readdirSync(POSTS_DIRECTORY)
-    .filter((fileName) => fileName.endsWith(".mdx"));
+  function walk(directory: string): string[] {
+    return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+      const fullPath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        return walk(fullPath);
+      }
+
+      if (!entry.isFile() || !entry.name.endsWith(".mdx")) {
+        return [];
+      }
+
+      return path.relative(POSTS_DIRECTORY, fullPath);
+    });
+  }
+
+  return walk(POSTS_DIRECTORY);
 }
 
 function readPost(fileName: string): Post {
-  const slug = fileName.replace(/\.mdx$/, "");
+  const slug = fileName.replace(/\.mdx$/, "").split(path.sep).join("/");
   const fullPath = path.join(POSTS_DIRECTORY, fileName);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
@@ -69,8 +83,17 @@ export function getAllPosts(): Post[] {
 }
 
 export function getPostBySlug(slug: string): Post | null {
+  if (slug.split("/").some((segment) => segment === ".." || segment === "")) {
+    return null;
+  }
+
   const fileName = `${slug}.mdx`;
   const fullPath = path.join(POSTS_DIRECTORY, fileName);
+  const relativePath = path.relative(POSTS_DIRECTORY, fullPath);
+
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    return null;
+  }
 
   if (!fs.existsSync(fullPath)) {
     return null;

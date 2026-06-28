@@ -6,7 +6,7 @@ import { getAllPostSlugs, getPostBySlug } from "@/lib/posts";
 export const runtime = "nodejs";
 
 type PostPageProps = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 };
 
 function formatDate(date: string) {
@@ -17,13 +17,17 @@ function formatDate(date: string) {
   }).format(new Date(date));
 }
 
+function getSlugPath(slug: string[]) {
+  return slug.join("/");
+}
+
 export function generateStaticParams() {
-  return getAllPostSlugs().map((slug) => ({ slug }));
+  return getAllPostSlugs().map((slug) => ({ slug: slug.split("/") }));
 }
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(getSlugPath(slug));
 
   if (!post) {
     return {
@@ -39,7 +43,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
 
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(getSlugPath(slug));
 
   if (!post) {
     notFound();
