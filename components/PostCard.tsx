@@ -1,42 +1,128 @@
 import Link from "next/link";
 import type { Post } from "@/types/post";
+import { getCategoryUpper } from "@/lib/categories";
 
 type PostCardProps = {
   post: Post;
+  compact?: boolean;
 };
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat("ko-KR", {
     year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(date));
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(new Date(date))
+    .replaceAll(". ", ".")
+    .replace(/\.$/, "");
 }
 
-export default function PostCard({ post }: PostCardProps) {
-  return (
-    <article className="border-t border-stone-200 py-7 first:border-t-0 first:pt-0">
-      <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-stone-500">
-        <time dateTime={post.date}>{formatDate(post.date)}</time>
-        <span aria-hidden="true">/</span>
-        <span>{post.category}</span>
-      </div>
-      <h2 className="text-2xl font-semibold tracking-tight text-stone-950">
-        <Link href={`/posts/${post.slug}`} className="hover:underline">
-          {post.title}
-        </Link>
-      </h2>
-      <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">{post.description}</p>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {post.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-md bg-stone-200/70 px-2.5 py-1 text-xs font-medium text-stone-700"
+function readingTime(content: string) {
+  const words = content.replace(/\s+/g, " ").trim().length;
+  return `${Math.max(1, Math.ceil(words / 650))}분`;
+}
+
+export default function PostCard({ post, compact = false }: PostCardProps) {
+  if (compact) {
+    return (
+      <Link href={`/posts/${post.slug}`} className="archive-card">
+        <div className="archive-card__cover" />
+        <div style={{ display: "flex", minWidth: 0, flexDirection: "column", gap: 8, padding: "4px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
+            <span
+              className="mono"
+              style={{
+                color: "var(--accent)",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.03em",
+              }}
+            >
+              {getCategoryUpper(post.category)}
+            </span>
+            <span className="mono" style={{ color: "var(--faint)", fontSize: 11 }}>
+              {formatDate(post.date)} · {readingTime(post.content)}
+            </span>
+          </div>
+          <h3
+            style={{
+              margin: 0,
+              color: "var(--ink)",
+              fontSize: 19,
+              fontWeight: 700,
+              lineHeight: 1.35,
+              letterSpacing: "-0.02em",
+            }}
           >
-            {tag}
-          </span>
-        ))}
+            {post.title}
+          </h3>
+          <p
+            style={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: 2,
+              overflow: "hidden",
+              margin: 0,
+              color: "var(--muted)",
+              fontSize: 14,
+              lineHeight: 1.6,
+            }}
+          >
+            {post.description}
+          </p>
+        </div>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href={`/posts/${post.slug}`} className="post-card">
+      <div className="post-card__cover" />
+      <div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 9, padding: "16px 18px 17px" }}>
+        <h3
+          style={{
+            margin: 0,
+            color: "var(--ink)",
+            fontSize: 16.5,
+            fontWeight: 700,
+            lineHeight: 1.42,
+            letterSpacing: "-0.012em",
+          }}
+        >
+          {post.title}
+        </h3>
+        <p
+          style={{
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 2,
+            overflow: "hidden",
+            margin: 0,
+            color: "var(--muted)",
+            fontSize: 13.5,
+            lineHeight: 1.6,
+          }}
+        >
+          {post.description}
+        </p>
+        <div
+          className="mono"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginTop: "auto",
+            paddingTop: 4,
+            color: "var(--faint)",
+            fontSize: 11.5,
+          }}
+        >
+          <span>{formatDate(post.date)}</span>
+          <span>·</span>
+          <span>{readingTime(post.content)}</span>
+        </div>
       </div>
-    </article>
+    </Link>
   );
 }

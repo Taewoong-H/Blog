@@ -4,33 +4,56 @@ type MdxContentProps = {
   source: string;
 };
 
+function toPlainText(value: unknown): string {
+  if (typeof value === "string" || typeof value === "number") {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(toPlainText).join("");
+  }
+
+  if (value && typeof value === "object" && "props" in value) {
+    const element = value as { props?: { children?: unknown } };
+    return toPlainText(element.props?.children);
+  }
+
+  return "";
+}
+
+function headingId(children: unknown) {
+  return toPlainText(children)
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/\s+/g, "-");
+}
+
 const components: MDXComponents = {
-  h2: (props) => (
-    <h2
-      className="mt-12 text-2xl font-semibold tracking-tight text-stone-950 first:mt-0"
-      {...props}
-    />
+  h2: ({ children, ...props }) => (
+    <h2 id={headingId(children)} {...props}>
+      {children}
+    </h2>
   ),
-  h3: (props) => <h3 className="mt-9 text-xl font-semibold text-stone-950" {...props} />,
-  p: (props) => <p className="mt-5 leading-8 text-stone-700" {...props} />,
-  a: (props) => <a className="font-medium text-stone-950 underline" {...props} />,
-  ul: (props) => <ul className="mt-5 list-disc space-y-2 pl-6 text-stone-700" {...props} />,
-  ol: (props) => <ol className="mt-5 list-decimal space-y-2 pl-6 text-stone-700" {...props} />,
-  blockquote: (props) => (
-    <blockquote
-      className="mt-7 border-l-4 border-stone-300 pl-5 text-stone-600"
-      {...props}
-    />
-  ),
-  code: (props) => (
-    <code className="rounded bg-stone-200/70 px-1.5 py-0.5 text-sm text-stone-900" {...props} />
-  ),
+  h3: ({ children, ...props }) => <h3 {...props}>{children}</h3>,
+  a: (props) => <a className="font-semibold text-[var(--accent)] underline" {...props} />,
 };
 
 export default function MdxContent({ source }: MdxContentProps) {
   return (
-    <div className="mt-10">
+    <div className="prose">
       <MDXRemote source={source} components={components} />
     </div>
   );
+}
+
+export function extractHeadings(source: string) {
+  return Array.from(source.matchAll(/^##\s+(.+)$/gm)).map((match) => {
+    const title = match[1].trim();
+
+    return {
+      id: headingId(title),
+      title,
+    };
+  });
 }
