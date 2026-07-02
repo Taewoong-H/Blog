@@ -486,6 +486,13 @@ input {
   background-size: cover;
 }
 
+.cover--image {
+  background-color: #f3f3f6;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .site-footer {
   border-top: 1px solid var(--line);
   background: var(--card);
