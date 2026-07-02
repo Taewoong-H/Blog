@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 블로그 이미지 원본(JPG/PNG)은 커밋하지 않음 — WebP 변환본만 커밋
+public/images/**/*.jpg
+public/images/**/*.jpeg
+public/images/**/*.png

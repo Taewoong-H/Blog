@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import MdxContent, { extractHeadings } from "@/components/MdxContent";
 import PostCard from "@/components/PostCard";
+import PostCover from "@/components/PostCover";
 import { getCategorySlugByLabel, getCategoryUpper } from "@/lib/categories";
 import { getAllPostSlugs, getAllPosts, getPostBySlug } from "@/lib/posts";
 
@@ -104,7 +105,10 @@ export default async function PostPage({ params }: PostPageProps) {
             </div>
           </div>
 
-          <div className="cover mb-[38px] h-[380px] rounded-[14px] max-sm:h-[220px]" />
+          <PostCover
+            src={post.coverImage}
+            className="cover mb-[38px] h-[380px] rounded-[14px] max-sm:h-[220px]"
+          />
 
           <MdxContent source={post.content} />
 

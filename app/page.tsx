@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PostCard from "@/components/PostCard";
+import PostCover from "@/components/PostCover";
 import { categories, getCategoryByLabel, getCategoryUpper } from "@/lib/categories";
 import { getAllPosts } from "@/lib/posts";
 
@@ -70,7 +71,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="cover" style={{ height: 330, borderRadius: 14 }} />
+            <PostCover
+              src={featured.coverImage}
+              className="cover"
+              style={{ height: 330, borderRadius: 14 }}
+            />
           </Link>
         </section>
       ) : null}
