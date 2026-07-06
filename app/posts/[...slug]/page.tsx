@@ -6,6 +6,8 @@ import PostCard from "@/components/PostCard";
 import PostCover from "@/components/PostCover";
 import { getCategorySlugByLabel, getCategoryUpper } from "@/lib/categories";
 import { getAllPostSlugs, getAllPosts, getPostBySlug } from "@/lib/posts";
+import { site } from "@/lib/site";
+import { postUrl } from "@/lib/urls";
 
 export const runtime = "nodejs";
 
@@ -46,9 +48,40 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
     };
   }
 
+  const url = postUrl(post);
+  const image = `/og/${post.slug}`;
+
   return {
     title: post.title,
     description: post.description,
+    alternates: {
+      canonical: url,
+    },
+    authors: [{ name: site.author }],
+    openGraph: {
+      type: "article",
+      siteName: site.name,
+      locale: site.locale,
+      url,
+      title: post.title,
+      description: post.description,
+      publishedTime: post.date,
+      authors: [site.author],
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [image],
+    },
   };
 }
 

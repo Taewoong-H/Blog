@@ -2,14 +2,42 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { site } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: {
-    default: "Taewoong.dev",
-    template: "%s | Taewoong.dev",
+    default: site.title,
+    template: `%s | ${site.name}`,
   },
-  description: "개발, 여행, 일상, 경제를 기록하는 개인 블로그입니다.",
+  description: site.description,
+  alternates: {
+    canonical: site.url,
+  },
+  authors: [{ name: site.author }],
+  openGraph: {
+    type: "website",
+    siteName: site.name,
+    locale: site.locale,
+    url: site.url,
+    title: site.title,
+    description: site.description,
+    images: [
+      {
+        url: "/og/site",
+        width: 1200,
+        height: 630,
+        alt: site.title,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.title,
+    description: site.description,
+    images: ["/og/site"],
+  },
 };
 
 export default function RootLayout({
