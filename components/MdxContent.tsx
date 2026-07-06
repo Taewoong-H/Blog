@@ -1,4 +1,5 @@
-import { MDXRemote, type MDXComponents } from "next-mdx-remote-client/rsc";
+import { MDXRemote, type MDXComponents, type MDXRemoteOptions } from "next-mdx-remote-client/rsc";
+import remarkGfm from "remark-gfm";
 
 type MdxContentProps = {
   source: string;
@@ -39,10 +40,16 @@ const components: MDXComponents = {
   a: (props) => <a className="font-semibold text-[var(--accent)] underline" {...props} />,
 };
 
+const options: MDXRemoteOptions = {
+  mdxOptions: {
+    remarkPlugins: [remarkGfm],
+  },
+};
+
 export default function MdxContent({ source }: MdxContentProps) {
   return (
     <div className="prose">
-      <MDXRemote source={source} components={components} />
+      <MDXRemote source={source} components={components} options={options} />
     </div>
   );
 }
