@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "gray-matter": "^4.0.3",
     "next": "16.2.9",
     "next-mdx-remote-client": "^2.1.11",
