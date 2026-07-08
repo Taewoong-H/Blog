@@ -1,4 +1,5 @@
 import { MDXRemote, type MDXComponents, type MDXRemoteOptions } from "next-mdx-remote-client/rsc";
+import rehypePrettyCode, { type Options as RehypePrettyCodeOptions } from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
 
 type MdxContentProps = {
@@ -40,9 +41,19 @@ const components: MDXComponents = {
   a: (props) => <a className="font-semibold text-[var(--accent)] underline" {...props} />,
 };
 
+const prettyCodeOptions: RehypePrettyCodeOptions = {
+  theme: "github-dark",
+  keepBackground: false,
+  defaultLang: {
+    block: "plaintext",
+    inline: "plaintext",
+  },
+};
+
 const options: MDXRemoteOptions = {
   mdxOptions: {
     remarkPlugins: [remarkGfm],
+    rehypePlugins: [[rehypePrettyCode, prettyCodeOptions]],
   },
 };
 

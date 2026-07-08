@@ -579,21 +579,61 @@ input {
   font-size: 0.86em;
 }
 
+.prose figure[data-rehype-pretty-code-figure] {
+  overflow: hidden;
+  margin: 30px 0;
+  border: 1px solid #2a2d36;
+  border-radius: 13px;
+  background: #15151a;
+}
+
+.prose figure[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+}
+
+.prose figure[data-rehype-pretty-code-figure] code {
+  display: grid;
+  min-width: max-content;
+}
+
+.prose figure[data-rehype-pretty-code-figure] code[data-language]::before {
+  display: block;
+  border-bottom: 1px solid #2a2d36;
+  background: #1d1f27;
+  color: #aeb4c2;
+  padding: 9px 18px;
+  content: attr(data-language);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .prose pre {
   overflow: auto;
-  border-radius: 12px;
-  background: var(--ink);
+  border-radius: 13px;
+  background: #15151a;
   color: #e8e8ea;
-  padding: 20px 22px;
+  padding: 18px 20px;
   font-family: var(--mono);
   font-size: 13.5px;
   line-height: 1.7;
+}
+
+.prose figure[data-rehype-pretty-code-figure] pre {
+  border-radius: 0;
+  padding: 18px 20px;
 }
 
 .prose pre code {
   background: transparent;
   color: inherit;
   padding: 0;
+}
+
+.prose figure[data-rehype-pretty-code-figure] [data-line] {
+  padding-inline: 2px;
 }
 
 @media (max-width: 900px) {
