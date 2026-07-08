@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { categories } from "@/lib/categories";
 import { getAllPosts } from "@/lib/posts";
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
 
 const stacks = [
   { group: "Core", items: ["React", "Next.js", "TypeScript", "Tailwind CSS"] },
-  { group: "Product", items: ["UI Architecture", "Design System", "Performance", "SEO"] },
-  { group: "Tools", items: ["Git", "Figma", "Vercel", "MDX"] },
+  { group: "Product", items: ["AI", "UI Architecture", "Design System", "Performance", "SEO"] },
+  { group: "Tools", items: ["Linux", "Nginx", "Git", "Figma", "Vercel", "MDX"] },
 ];
 
 const focusAreas = [
@@ -31,8 +32,8 @@ const focusAreas = [
 
 const timeline = [
   { year: "2026", title: "Taewoong.dev 리뉴얼", desc: "MDX 기반 개인 블로그를 다시 만들고 기록을 시작." },
-  { year: "2025", title: "프론트엔드 실험", desc: "작은 사이드 프로젝트와 UI 개선을 꾸준히 시도." },
-  { year: "2024", title: "기록 습관 만들기", desc: "개발, 여행, 돈에 대한 생각을 노트로 남기기 시작." },
+  { year: "2024", title: "AI팀 이동", desc: "AI팀으로 이동해 플랫폼 서비스 프론트엔드 개발 집중적으로 시작" },
+  { year: "2022", title: "롯데이노베이트 입사", desc: "중고 신입으로 입사해 사회생활을 시작" },
   { year: "2021", title: "프론트엔드 개발자로", desc: "웹과 인터페이스를 만드는 일에 정착." },
 ];
 
@@ -59,31 +60,35 @@ export default function AboutPage() {
             꾸준히 기록하며 제가 어떤 문제를 보고 어떻게 풀어가는지 남깁니다.
           </p>
           <div className="flex flex-wrap gap-2.5">
-            <a href="https://github.com/YOUR_GITHUB_ID" className="btn-ink">
+            <a href="https://github.com/Taewoong-H" className="btn-ink">
               GitHub
             </a>
-            <a href="mailto:your.email@example.com" className="btn-ghost">
+            <a href="mailto:taeung2008@gmail.com" className="btn-ghost">
               Email
             </a>
-            <a href="https://www.linkedin.com/in/YOUR_LINKEDIN_ID" className="btn-ghost">
-              LinkedIn
-            </a>
+            {/*<a href="https://www.linkedin.com/in/YOUR_LINKEDIN_ID" className="btn-ghost">*/}
+            {/*  LinkedIn*/}
+            {/*</a>*/}
             <Link href="/posts" className="btn-ghost">
               Archive
             </Link>
           </div>
         </div>
         <div className="relative aspect-square overflow-hidden rounded-[20px] border border-[var(--line)] bg-[var(--card)]">
-          <div className="cover absolute inset-4 rounded-[16px]" />
+          <Image
+            src="/images/profile/img-5331.webp"
+            alt="Taewoong 프로필 사진"
+            fill
+            sizes="(min-width: 1024px) 420px, calc(100vw - 48px)"
+            className="object-cover"
+            priority
+          />
           <div className="absolute right-6 bottom-6 left-6 rounded-[13px] border border-[var(--line)] bg-[rgb(255_255_255_/_88%)] p-4 backdrop-blur">
             <div className="mono mb-1 text-[11px] font-bold tracking-[0.08em] text-[var(--accent)]">
               PROFILE
             </div>
             <div className="text-[15px] font-extrabold tracking-[-0.02em]">
               Frontend Developer
-            </div>
-            <div className="mt-1 text-[13px] leading-[1.5] text-[var(--muted)]">
-              프로필 이미지는 이 영역에 교체하면 됩니다.
             </div>
           </div>
         </div>

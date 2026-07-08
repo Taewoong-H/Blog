@@ -3,7 +3,7 @@ import path from "node:path";
 import process from "node:process";
 import sharp from "sharp";
 
-const POSTS_IMAGES_DIR = path.join(process.cwd(), "public", "images", "posts");
+const POSTS_IMAGES_DIR = path.join(process.cwd(), "public", "images");
 const MAX_DIMENSION = 1600;
 const MAX_BYTES = 500 * 1024;
 const QUALITY_STEPS = [80, 70, 60, 50];

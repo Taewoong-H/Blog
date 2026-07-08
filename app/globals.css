@@ -430,6 +430,7 @@ input {
   display: inline-flex;
   width: 54px;
   height: 54px;
+  overflow: hidden;
   flex-shrink: 0;
   align-items: flex-end;
   justify-content: center;
