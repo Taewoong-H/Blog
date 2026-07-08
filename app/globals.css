@@ -519,27 +519,40 @@ input {
   color: #26262c;
   font-size: 17px;
   line-height: 1.85;
+  word-break: keep-all;
 }
 
 .prose h2 {
-  margin: 42px 0 16px;
+  margin: 48px 0 17px;
   color: var(--ink);
   font-size: 25px;
   font-weight: 800;
+  line-height: 1.35;
   letter-spacing: -0.025em;
   scroll-margin-top: 90px;
 }
 
 .prose h3 {
-  margin: 34px 0 14px;
+  margin: 36px 0 14px;
   color: var(--ink);
   font-size: 21px;
   font-weight: 800;
+  line-height: 1.42;
   letter-spacing: -0.02em;
 }
 
 .prose p {
   margin: 0 0 22px;
+}
+
+.prose strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.prose a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
 }
 
 .prose ul,
@@ -559,6 +572,11 @@ input {
   list-style: decimal;
 }
 
+.prose li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .prose blockquote {
   margin: 28px 0;
   border-left: 3px solid var(--accent);
@@ -568,6 +586,55 @@ input {
   color: #33333a;
   font-size: 17px;
   line-height: 1.7;
+}
+
+.prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.prose hr {
+  height: 1px;
+  border: 0;
+  margin: 42px 0;
+  background: var(--line-strong);
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin: 30px auto;
+}
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  margin: 30px 0;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--line-strong);
+  padding: 11px 13px;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.prose th {
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.prose td {
+  background: var(--card);
+  color: #33333a;
 }
 
 .prose code {
@@ -634,6 +701,28 @@ input {
 
 .prose figure[data-rehype-pretty-code-figure] [data-line] {
   padding-inline: 2px;
+}
+
+@media (max-width: 640px) {
+  .prose {
+    font-size: 16px;
+    line-height: 1.78;
+  }
+
+  .prose h2 {
+    margin-top: 40px;
+    font-size: 22px;
+  }
+
+  .prose h3 {
+    font-size: 19px;
+  }
+
+  .prose pre,
+  .prose figure[data-rehype-pretty-code-figure] pre {
+    padding: 16px;
+    font-size: 12.5px;
+  }
 }
 
 @media (max-width: 900px) {
