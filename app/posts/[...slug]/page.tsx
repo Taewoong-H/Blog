@@ -6,6 +6,7 @@ import PostCard from "@/components/PostCard";
 import PostCover from "@/components/PostCover";
 import { getCategorySlugByLabel, getCategoryUpper } from "@/lib/categories";
 import { getAllPostSlugs, getAllPosts, getPostBySlug } from "@/lib/posts";
+import { getCoverSrc } from "@/lib/cover/resolve";
 import { site } from "@/lib/site";
 import { postUrl } from "@/lib/urls";
 
@@ -49,7 +50,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   }
 
   const url = postUrl(post);
-  const image = `/og/${post.slug}`;
+  const image = getCoverSrc(post);
 
   return {
     title: post.title,
@@ -139,7 +140,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
 
           <PostCover
-            src={post.coverImage}
+            src={getCoverSrc(post)}
             className="cover mb-[38px] h-[380px] rounded-[14px] max-sm:h-[220px]"
           />
 

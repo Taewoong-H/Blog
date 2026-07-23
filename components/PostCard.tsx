@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PostCover from "@/components/PostCover";
 import type { Post } from "@/types/post";
+import { getCoverSrc } from "@/lib/cover/resolve";
 import { getCategoryUpper } from "@/lib/categories";
 
 type PostCardProps = {
@@ -28,7 +29,7 @@ export default function PostCard({ post, compact = false }: PostCardProps) {
   if (compact) {
     return (
       <Link href={`/posts/${post.slug}`} className="archive-card">
-        <PostCover src={post.coverImage} className="archive-card__cover" />
+        <PostCover src={getCoverSrc(post)} className="archive-card__cover" />
         <div style={{ display: "flex", minWidth: 0, flexDirection: "column", gap: 8, padding: "4px 0" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
             <span
@@ -79,7 +80,7 @@ export default function PostCard({ post, compact = false }: PostCardProps) {
 
   return (
     <Link href={`/posts/${post.slug}`} className="post-card">
-      <PostCover src={post.coverImage} className="post-card__cover" />
+      <PostCover src={getCoverSrc(post)} className="post-card__cover" />
       <div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 9, padding: "16px 18px 17px" }}>
         <h3
           style={{

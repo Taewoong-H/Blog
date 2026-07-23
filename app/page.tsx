@@ -4,6 +4,7 @@ import PostCard from "@/components/PostCard";
 import PostCover from "@/components/PostCover";
 import { categories, getCategoryByLabel, getCategoryUpper } from "@/lib/categories";
 import { getAllPosts } from "@/lib/posts";
+import { getCoverSrc } from "@/lib/cover/resolve";
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat("ko-KR", {
@@ -78,7 +79,7 @@ export default function Home() {
               </div>
             </div>
             <PostCover
-              src={featured.coverImage}
+              src={getCoverSrc(featured)}
               className="cover"
               style={{ height: 330, borderRadius: 14 }}
             />

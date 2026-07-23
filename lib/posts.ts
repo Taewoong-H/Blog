@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import type { CoverConfig, CoverVariant } from "@/lib/cover/types";
 import type { Post } from "@/types/post";
 
 const POSTS_DIRECTORY = path.join(process.cwd(), "content", "posts");
@@ -11,8 +12,40 @@ function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
 
+function parseCover(value: unknown, slug: string): CoverConfig | undefined {
+  if (value === undefined) return undefined;
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`Invalid cover frontmatter in content/posts/${slug}.mdx`);
+  }
+
+  const cover = value as Record<string, unknown>;
+  const variant = cover.variant;
+  const stringFields = ["eyebrow", "headline", "accentPart", "sub", "file", "badge", "image"] as const;
+
+  if (variant !== undefined && ![1, 2, 3, 4].includes(variant as number)) {
+    throw new Error(`Invalid cover.variant in content/posts/${slug}.mdx`);
+  }
+
+  for (const field of stringFields) {
+    if (cover[field] !== undefined && typeof cover[field] !== "string") {
+      throw new Error(`Invalid cover.${field} in content/posts/${slug}.mdx`);
+    }
+  }
+
+  return {
+    variant: variant as CoverVariant | undefined,
+    eyebrow: cover.eyebrow as string | undefined,
+    headline: cover.headline as string | undefined,
+    accentPart: cover.accentPart as string | undefined,
+    sub: cover.sub as string | undefined,
+    file: cover.file as string | undefined,
+    badge: cover.badge as string | undefined,
+    image: cover.image as string | undefined,
+  };
+}
+
 function parsePostFrontmatter(data: Record<string, unknown>, slug: string): PostFrontmatter {
-  const { title, description, date, category, tags, published, coverImage } = data;
+  const { title, description, date, category, tags, published, cover } = data;
 
   if (
     typeof title !== "string" ||
@@ -20,8 +53,7 @@ function parsePostFrontmatter(data: Record<string, unknown>, slug: string): Post
     typeof date !== "string" ||
     typeof category !== "string" ||
     !isStringArray(tags) ||
-    typeof published !== "boolean" ||
-    typeof coverImage !== "string"
+    typeof published !== "boolean"
   ) {
     throw new Error(`Invalid frontmatter in content/posts/${slug}.mdx`);
   }
@@ -33,7 +65,7 @@ function parsePostFrontmatter(data: Record<string, unknown>, slug: string): Post
     category,
     tags,
     published,
-    coverImage,
+    cover: parseCover(cover, slug),
   };
 }
 

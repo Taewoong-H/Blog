@@ -255,23 +255,8 @@ input {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--line);
-  background: repeating-linear-gradient(135deg, #e8e8ec 0 11px, #f3f3f6 11px 22px);
   background-position: center;
   background-size: cover;
-}
-
-.cover::after {
-  position: absolute;
-  left: 18px;
-  bottom: 16px;
-  color: #9a9aa4;
-  content: "cover · 1600×900";
-  font-family: var(--mono);
-  font-size: 12px;
-}
-
-.cover--image::after {
-  content: none;
 }
 
 .post-card {
@@ -293,9 +278,8 @@ input {
 }
 
 .post-card__cover {
-  height: 150px;
+  aspect-ratio: 1200 / 630;
   border-bottom: 1px solid var(--line);
-  background: repeating-linear-gradient(135deg, #ececf0 0 9px, #f6f6f9 9px 18px);
   background-position: center;
   background-size: cover;
 }
@@ -479,10 +463,9 @@ input {
 }
 
 .archive-card__cover {
-  height: 108px;
+  aspect-ratio: 1200 / 630;
   border: 1px solid var(--line);
   border-radius: 11px;
-  background: repeating-linear-gradient(135deg, #ededef 0 9px, #f6f6f9 9px 18px);
   background-position: center;
   background-size: cover;
 }
@@ -491,7 +474,7 @@ input {
   background-color: #f3f3f6;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
 }
 
 .site-footer {

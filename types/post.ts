@@ -1,3 +1,5 @@
+import type { CoverConfig } from "@/lib/cover/types";
+
 export type Post = {
   slug: string;
   title: string;
@@ -6,6 +8,6 @@ export type Post = {
   category: string;
   tags: string[];
   published: boolean;
-  coverImage: string;
+  cover?: CoverConfig;
   content: string;
 };

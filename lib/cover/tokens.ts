@@ -1,0 +1,20 @@
+export const T = {
+  bg: "#f7f7f9",
+  card: "#ffffff",
+  ink: "#15151a",
+  muted: "#6b6b76",
+  faint: "#9a9aa6",
+  line: "#ededf1",
+  lineStrong: "#e0e0e7",
+  accent: "#2f54ff",
+  accentHover: "#2746e0",
+  accentSoft: "#edf0ff",
+  inkDeep: "#0f1117",
+  accentLight: "#7d93ff",
+  accentPale: "#c9d3ff",
+  accentTint: "#dfe5ff",
+  termDim: "#565968",
+  termGreen: "#4a9d6e",
+  hairline: "#34343c",
+} as const;
+

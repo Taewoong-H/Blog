@@ -1,8 +1,12 @@
 import { ImageResponse } from "next/og";
-import { getPostBySlug } from "@/lib/posts";
+import { getFonts } from "@/lib/cover/fonts";
+import { resolveCover } from "@/lib/cover/resolve";
+import { CoverTemplate } from "@/lib/cover/templates";
+import { getAllPostSlugs, getPostBySlug } from "@/lib/posts";
 import { site } from "@/lib/site";
 
 export const runtime = "nodejs";
+export const dynamic = "force-static";
 
 const size = {
   width: 1200,
@@ -13,71 +17,31 @@ type OgRouteContext = {
   params: Promise<{ slug: string[] }>;
 };
 
+export function generateStaticParams() {
+  return ["site", ...getAllPostSlugs()].map((slug) => ({ slug: slug.split("/") }));
+}
+
 export async function GET(_request: Request, { params }: OgRouteContext) {
   const { slug } = await params;
-  const post = getPostBySlug(slug.join("/"));
-  const title = post?.title ?? site.title;
-  const category = post?.category ?? site.name;
+  const slugPath = slug.join("/");
+  const post = getPostBySlug(slugPath);
+  const cover = resolveCover(
+    post ?? {
+      slug: "site",
+      title: site.title,
+      description: site.description,
+      category: "BLOG",
+      cover: {
+        variant: 3,
+        eyebrow: "TAEWOONG.LOG",
+        headline: "개발과 일상을|꾸준히 기록합니다",
+        file: "taewoong.dev",
+      },
+    },
+  );
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: "#f6f4ef",
-          border: "1px solid #dedbd2",
-          padding: 72,
-          color: "#171717",
-          fontFamily: "Arial",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            fontSize: 28,
-            fontWeight: 700,
-            color: "#2463eb",
-          }}
-        >
-          <span>{site.name}</span>
-          <span style={{ color: "#74706a" }}>{category}</span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 28,
-          }}
-        >
-          <div
-            style={{
-              maxWidth: 980,
-              fontSize: 72,
-              fontWeight: 800,
-              lineHeight: 1.12,
-              letterSpacing: "-0.03em",
-            }}
-          >
-            {title}
-          </div>
-          <div
-            style={{
-              width: 104,
-              height: 8,
-              background: "#2463eb",
-              borderRadius: 999,
-            }}
-          />
-        </div>
-        <div style={{ fontSize: 26, color: "#74706a" }}>{site.url.replace("https://", "")}</div>
-      </div>
-    ),
-    size,
+    <CoverTemplate cover={cover} slug={slugPath} />,
+    { ...size, fonts: await getFonts() },
   );
 }

@@ -7,14 +7,13 @@ type PostCoverProps = {
 };
 
 export default function PostCover({ src, className, style }: PostCoverProps) {
-  const hasImage = src.trim().length > 0;
-
   return (
     <div
-      className={`${className}${hasImage ? " cover--image" : ""}`}
+      aria-hidden="true"
+      className={`${className} cover--image`}
       style={{
         ...style,
-        ...(hasImage ? { backgroundImage: `url("${src}")` } : {}),
+        backgroundImage: `url("${src}")`,
       }}
     />
   );
