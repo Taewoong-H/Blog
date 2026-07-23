@@ -80,8 +80,7 @@ export default function Home() {
             </div>
             <PostCover
               src={getCoverSrc(featured)}
-              className="cover"
-              style={{ height: 330, borderRadius: 14 }}
+              className="cover home-featured__cover"
             />
           </Link>
         </section>
