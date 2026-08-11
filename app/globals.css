@@ -7,7 +7,7 @@
   --card: #ffffff;
   --ink: #15151a;
   --muted: #6b6b76;
-  --faint: #9a9aa6;
+  --faint: #70707b;
   --line: #ededf1;
   --line-strong: #e0e0e7;
   --accent: #2f54ff;
@@ -516,6 +516,18 @@ input {
   font-size: 17px;
   line-height: 1.85;
   word-break: keep-all;
+}
+
+/*
+ * Reading measure. The article column is ~828px at desktop, which runs the
+ * body text past a comfortable line length. Constrain the running text only —
+ * code blocks, tables, and images keep the full column width.
+ */
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote {
+  max-width: 68ch;
 }
 
 .prose h2 {
