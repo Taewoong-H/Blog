@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { categories } from "@/lib/categories";
+import { categories, getCategoryHref } from "@/lib/categories";
 
 const navItems = [
   { href: "/", label: "홈", match: "home" },
   ...categories.map((category) => ({
-    href: `/posts?category=${category.slug}`,
+    href: getCategoryHref(category.slug),
     label: category.label,
     match: category.slug,
   })),
@@ -26,6 +26,14 @@ export default function Header() {
 
     if (match === "about") {
       return pathname === "/about";
+    }
+
+    if (match === "market") {
+      return (
+        pathname === "/posts/market" ||
+        pathname.startsWith("/posts/market/") ||
+        (pathname === "/posts" && activeCategory === "market")
+      );
     }
 
     return pathname === "/posts" && activeCategory === match;

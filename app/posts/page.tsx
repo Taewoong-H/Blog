@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PostCard from "@/components/PostCard";
-import { categories, getCategoryByLabel, getCategoryBySlug } from "@/lib/categories";
+import {
+  categories,
+  getCategoryBySlug,
+  getCategoryByValue,
+  getCategoryHref,
+} from "@/lib/categories";
 import { getAllPosts } from "@/lib/posts";
 
 export const metadata: Metadata = {
@@ -18,7 +23,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
   const selectedCategory = getCategoryBySlug(category);
   const posts = getAllPosts();
   const filteredPosts = selectedCategory
-    ? posts.filter((post) => getCategoryByLabel(post.category)?.slug === selectedCategory.slug)
+    ? posts.filter((post) => getCategoryByValue(post.category)?.slug === selectedCategory.slug)
     : posts;
 
   return (
@@ -48,13 +53,13 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
           전체 <span className="mono text-[11.5px] opacity-60">{posts.length}</span>
         </Link>
         {categories.map((item) => {
-          const count = posts.filter((post) => getCategoryByLabel(post.category)?.slug === item.slug).length;
+          const count = posts.filter((post) => getCategoryByValue(post.category)?.slug === item.slug).length;
           const active = selectedCategory?.slug === item.slug;
 
           return (
             <Link
               key={item.slug}
-              href={`/posts?category=${item.slug}`}
+              href={getCategoryHref(item.slug)}
               className={`rounded-full border px-4 py-2 text-sm font-semibold no-underline transition-colors ${
                 active
                   ? "border-[var(--accent)] bg-[var(--accent)] text-white"

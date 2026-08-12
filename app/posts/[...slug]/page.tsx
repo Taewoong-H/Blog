@@ -1,14 +1,23 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import MdxContent, { extractHeadings } from "@/components/MdxContent";
 import PostCard from "@/components/PostCard";
 import PostCover from "@/components/PostCover";
-import { getCategorySlugByLabel, getCategoryUpper } from "@/lib/categories";
+import ScanReport, { ScanReportUnavailable } from "@/components/ScanReport";
+import {
+  getCategoryByValue,
+  getCategoryHref,
+  getCategorySlugByLabel,
+  getCategoryUpper,
+} from "@/lib/categories";
 import { getAllPostSlugs, getAllPosts, getPostBySlug } from "@/lib/posts";
 import { getCoverSrc } from "@/lib/cover/resolve";
 import { site } from "@/lib/site";
 import { postUrl } from "@/lib/urls";
+import type { ScanData, ScanStock } from "@/types/scan";
 
 export const runtime = "nodejs";
 
@@ -33,6 +42,96 @@ function readingTime(content: string) {
 
 function getSlugPath(slug: string[]) {
   return slug.join("/");
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function isNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function isNullableNumber(value: unknown): value is number | null {
+  return value === null || isNumber(value);
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
+function isScanStock(value: unknown, needsReason = false): value is ScanStock {
+  if (!isRecord(value)) return false;
+
+  return (
+    typeof value.ticker === "string" &&
+    typeof value.name === "string" &&
+    typeof value.sector === "string" &&
+    isNullableNumber(value.dist_from_pivot_pct) &&
+    isNullableNumber(value.dist_from_ma20_pct) &&
+    ["accumulation", "distribution", "unknown"].includes(value.vol_character as string) &&
+    (!needsReason || typeof value.reason === "string")
+  );
+}
+
+function isScanData(value: unknown): value is ScanData {
+  if (!isRecord(value) || !isRecord(value.market) || !isRecord(value.criteria)) return false;
+
+  const { market, criteria } = value;
+  const newHighs = market.new_highs;
+  const concentration = market.concentration;
+  const sectorMetrics = criteria.sector_metrics;
+
+  return (
+    isNumber(value.schema_version) &&
+    typeof value.date === "string" &&
+    typeof value.generated_at === "string" &&
+    typeof value.disclaimer === "string" &&
+    typeof market.gate === "string" &&
+    isNumber(market.ad_ratio) &&
+    isNumber(market.advancers) &&
+    isNumber(market.decliners) &&
+    isRecord(newHighs) &&
+    isNumber(newHighs.recent) &&
+    isNumber(newHighs.prev) &&
+    isNumber(newHighs.trend_pct) &&
+    isRecord(concentration) &&
+    typeof concentration.sector === "string" &&
+    isNumber(concentration.pct) &&
+    Array.isArray(value.sectors) &&
+    value.sectors.every(
+      (sector) =>
+        isRecord(sector) &&
+        isNumber(sector.rank) &&
+        typeof sector.name === "string" &&
+        isNumber(sector.score) &&
+        isNumber(sector.persistence) &&
+        isNumber(sector.stage2_ratio) &&
+        isNumber(sector.momentum_pct),
+    ) &&
+    Array.isArray(value.candidates) &&
+    value.candidates.every((stock) => isScanStock(stock)) &&
+    Array.isArray(value.watching) &&
+    value.watching.every((stock) => isScanStock(stock, true)) &&
+    isStringArray(criteria.trend_template) &&
+    isStringArray(criteria.entry_filter) &&
+    typeof criteria.sector_score === "string" &&
+    isRecord(sectorMetrics) &&
+    typeof sectorMetrics.persistence === "string" &&
+    typeof sectorMetrics.stage2_ratio === "string" &&
+    typeof sectorMetrics.momentum_pct === "string"
+  );
+}
+
+function readScanData(slug: string): ScanData | null {
+  const jsonPath = path.join(process.cwd(), "content", "posts", `${slug}.json`);
+
+  try {
+    const parsed: unknown = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+    return isScanData(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
 }
 
 export function generateStaticParams() {
@@ -105,6 +204,15 @@ export default async function PostPage({ params }: PostPageProps) {
     .slice(0, 3);
   const headings = extractHeadings(post.content);
   const categorySlug = getCategorySlugByLabel(post.category);
+  const category = getCategoryByValue(post.category);
+  const isMarketPost = post.slug.startsWith("market/");
+  const scanData = isMarketPost ? readScanData(post.slug) : null;
+  const mdxComponents = isMarketPost
+    ? {
+        ScanReport: () =>
+          scanData ? <ScanReport data={scanData} /> : <ScanReportUnavailable />,
+      }
+    : undefined;
 
   return (
     <div>
@@ -120,10 +228,10 @@ export default async function PostPage({ params }: PostPageProps) {
             /
           </span>
           <Link
-            href={`/posts?category=${categorySlug}`}
+            href={getCategoryHref(categorySlug)}
             className="shrink-0 transition-colors hover:text-[var(--accent)]"
           >
-            {post.category}
+            {category?.label ?? post.category}
           </Link>
           <span className="shrink-0" aria-hidden="true">
             /
@@ -160,7 +268,11 @@ export default async function PostPage({ params }: PostPageProps) {
             className="cover mb-[38px] aspect-[1200/630] rounded-[14px]"
           />
 
-          <MdxContent source={post.content} />
+          <MdxContent
+            source={post.content}
+            components={mdxComponents}
+            commentary={post.commentary}
+          />
 
           <div className="my-9 flex flex-wrap gap-2">
             {post.tags.map((tag) => (

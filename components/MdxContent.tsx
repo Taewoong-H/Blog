@@ -4,6 +4,8 @@ import remarkGfm from "remark-gfm";
 
 type MdxContentProps = {
   source: string;
+  components?: MDXComponents;
+  commentary?: "ai_draft" | "edited";
 };
 
 function toPlainText(value: unknown): string {
@@ -31,7 +33,7 @@ function headingId(children: unknown) {
     .replace(/\s+/g, "-");
 }
 
-const components: MDXComponents = {
+const baseComponents: MDXComponents = {
   h2: ({ children, ...props }) => (
     <h2 id={headingId(children)} {...props}>
       {children}
@@ -57,10 +59,30 @@ const options: MDXRemoteOptions = {
   },
 };
 
-export default function MdxContent({ source }: MdxContentProps) {
+export default function MdxContent({ source, components, commentary }: MdxContentProps) {
+  const mergedComponents: MDXComponents = {
+    ...baseComponents,
+    ...components,
+    h2: ({ children, ...props }) => {
+      const title = toPlainText(children).trim();
+      const isAiCommentary = commentary === "ai_draft" && title === "코멘트";
+
+      return (
+        <h2
+          id={headingId(children)}
+          className={isAiCommentary ? "mdx-section-heading" : undefined}
+          {...props}
+        >
+          <span>{children}</span>
+          {isAiCommentary ? <span className="ai-draft-badge">AI 초안</span> : null}
+        </h2>
+      );
+    },
+  };
+
   return (
     <div className="prose">
-      <MDXRemote source={source} components={components} options={options} />
+      <MDXRemote source={source} components={mergedComponents} options={options} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { categories } from "@/lib/categories";
+import { categories, getCategoryByValue, getCategoryHref } from "@/lib/categories";
 import { getAllPosts } from "@/lib/posts";
 
 export const metadata: Metadata = {
@@ -100,12 +100,14 @@ export default function AboutPage() {
         </h2>
         <div className="grid gap-[18px] md:grid-cols-2">
           {categories.map((category) => {
-            const count = posts.filter((post) => post.category === category.label).length;
+            const count = posts.filter(
+              (post) => getCategoryByValue(post.category)?.slug === category.slug,
+            ).length;
 
             return (
               <Link
                 key={category.slug}
-                href={`/posts?category=${category.slug}`}
+                href={getCategoryHref(category.slug)}
                 className="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-6 no-underline transition-all hover:-translate-y-0.5 hover:border-[var(--accent)]"
               >
                 <div className="mb-3 flex items-baseline gap-2.5">

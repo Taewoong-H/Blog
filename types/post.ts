@@ -8,6 +8,9 @@ export type Post = {
   category: string;
   tags: string[];
   published: boolean;
+  gate?: string;
+  candidateCount?: number;
+  commentary?: "ai_draft" | "edited";
   cover?: CoverConfig;
   content: string;
 };

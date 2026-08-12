@@ -45,7 +45,18 @@ function parseCover(value: unknown, slug: string): CoverConfig | undefined {
 }
 
 function parsePostFrontmatter(data: Record<string, unknown>, slug: string): PostFrontmatter {
-  const { title, description, date, category, tags, published, cover } = data;
+  const {
+    title,
+    description,
+    date,
+    category,
+    tags,
+    published,
+    gate,
+    candidate_count: candidateCount,
+    commentary,
+    cover,
+  } = data;
 
   if (
     typeof title !== "string" ||
@@ -58,6 +69,21 @@ function parsePostFrontmatter(data: Record<string, unknown>, slug: string): Post
     throw new Error(`Invalid frontmatter in content/posts/${slug}.mdx`);
   }
 
+  if (gate !== undefined && typeof gate !== "string") {
+    throw new Error(`Invalid gate frontmatter in content/posts/${slug}.mdx`);
+  }
+
+  if (
+    candidateCount !== undefined &&
+    (typeof candidateCount !== "number" || !Number.isFinite(candidateCount))
+  ) {
+    throw new Error(`Invalid candidate_count frontmatter in content/posts/${slug}.mdx`);
+  }
+
+  if (commentary !== undefined && commentary !== "ai_draft" && commentary !== "edited") {
+    throw new Error(`Invalid commentary frontmatter in content/posts/${slug}.mdx`);
+  }
+
   return {
     title,
     description,
@@ -65,6 +91,9 @@ function parsePostFrontmatter(data: Record<string, unknown>, slug: string): Post
     category,
     tags,
     published,
+    gate,
+    candidateCount,
+    commentary,
     cover: parseCover(cover, slug),
   };
 }

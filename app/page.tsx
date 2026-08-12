@@ -2,7 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import PostCard from "@/components/PostCard";
 import PostCover from "@/components/PostCover";
-import { categories, getCategoryByLabel, getCategoryUpper } from "@/lib/categories";
+import {
+  categories,
+  getCategoryByValue,
+  getCategoryHref,
+  getCategoryUpper,
+} from "@/lib/categories";
 import { getAllPosts } from "@/lib/posts";
 import { getCoverSrc } from "@/lib/cover/resolve";
 
@@ -22,7 +27,9 @@ function readingTime(content: string) {
 }
 
 export default function Home() {
-  const posts = getAllPosts();
+  const allPosts = getAllPosts();
+  const posts = allPosts.filter((post) => post.category !== "market");
+  const homeCategories = categories.filter((category) => category.slug !== "market");
   const featured = posts[0];
   const tags = Array.from(new Set(posts.flatMap((post) => post.tags))).slice(0, 12);
 
@@ -88,8 +95,8 @@ export default function Home() {
 
       <div className="site-container home-layout">
         <main>
-          {categories.map((category) => {
-            const sectionPosts = posts.filter((post) => getCategoryByLabel(post.category)?.slug === category.slug);
+          {homeCategories.map((category) => {
+            const sectionPosts = posts.filter((post) => getCategoryByValue(post.category)?.slug === category.slug);
 
             return (
               <section key={category.slug} style={{ marginBottom: 48 }}>
@@ -101,7 +108,7 @@ export default function Home() {
                     </span>
                   </div>
                   <Link
-                    href={`/posts?category=${category.slug}`}
+                    href={getCategoryHref(category.slug)}
                     className="section-head__more"
                   >
                     더보기 →
@@ -161,7 +168,7 @@ export default function Home() {
             </p>
             <div className="stat-grid">
               <div>
-                <div style={{ fontWeight: 800, fontSize: 16 }}>{posts.length}</div>
+                <div style={{ fontWeight: 800, fontSize: 16 }}>{allPosts.length}</div>
                 <div className="mono" style={{ marginTop: 2, color: "var(--faint)", fontSize: 10.5 }}>
                   POSTS
                 </div>

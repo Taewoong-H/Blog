@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories } from "@/lib/categories";
+import { categories, getCategoryHref } from "@/lib/categories";
 
 export default function Footer() {
   return (
@@ -10,9 +10,9 @@ export default function Footer() {
             Taewoong<span className="text-[var(--accent)]">.dev</span>
           </div>
           <p className="max-w-[30ch] text-[13px] leading-6 text-[var(--faint)]">
-            개발 · 여행 · 일상 · 경제.
+            개발 · 여행 · 일상 · 경제 · 주가관찰.
             <br />
-            매주 화요일 발행하는 개인 기록.
+            꾸준히 쌓아가는 개인 기록.
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export default function Footer() {
               <Link
                 key={category.slug}
                 className="text-[13.5px] text-[var(--muted)] hover:text-[var(--accent)]"
-                href={`/posts?category=${category.slug}`}
+                href={getCategoryHref(category.slug)}
               >
                 {category.label}
               </Link>
