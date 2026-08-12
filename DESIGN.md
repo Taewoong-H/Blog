@@ -181,7 +181,7 @@ A three-step neutral ground carrying a single electric blue, with a dark chrome 
 
 ### Named Rules
 
-**The One Blue Rule.** Signal Blue is the system's only chromatic color. If a screen seems to need a second hue to be legible, the hierarchy is wrong — fix the hierarchy. New states express themselves through the neutral ramp, the blue tint, or weight, never a new color. The sole interface exception is the 주가관찰 report: Korean equity convention requires 상승 and `FAIL` to use a restrained red while 하락 keeps Signal Blue. This red is scoped to `.scan-report` and `.market-archive`; it is not a reusable site accent.
+**The One Blue Rule.** Signal Blue is the system's only chromatic color. If a screen seems to need a second hue to be legible, the hierarchy is wrong — fix the hierarchy. New states express themselves through the neutral ramp, the blue tint, or weight, never a new color. The sole interface exception is 주가관찰 data: Korean equity convention requires 상승 and `FAIL` to use a restrained red while 하락 keeps Signal Blue. This red stays inside market-specific status and report surfaces; it is not a reusable site accent.
 
 **The Paper-Never-White Rule.** The page ground is always `{colors.paper}`. White means "this is a surface holding content." Painting a full-bleed section white erases the system's primary depth cue.
 
@@ -218,9 +218,9 @@ Two container widths, both centered with a symmetric gutter: `site-container` at
 
 The home page runs an asymmetric two-column layout — `1fr / 320px` with a 52px gap — where the sidebar is `position: sticky` at `top: 90px`. The article page inverts the ratio to `1fr / 196px`, the narrow rail holding a sticky table of contents that disappears below the `lg` breakpoint. The featured slot is a `1.05fr / 0.95fr` split — text marginally wider than its cover.
 
-Post grids are two columns on the home page and single-column rows in the archive, where each row is a `172px / 1fr` cover-plus-text band.
+The home route is an editorial index, not a uniform card grid. A cover-led split hero introduces the newest directly authored post, then numbered category sections begin with `01` 주가관찰. Every category section pairs one lead card with a compact list of the next entries; the remaining authored categories continue the sequence. The archive stays a single-column list of `172px / 1fr` cover-plus-text rows.
 
-The article column resolves to roughly 828px at desktop width. Running text inside it — paragraphs, lists, blockquotes — is capped at `68ch` (~689px at the 17px body size, about 38 Korean characters per line). Code blocks, tables, and images are deliberately left uncapped so they use the full 828px column. The resulting step between narrow prose and full-width media is intentional.
+The article column resolves to roughly 828px at desktop width. Paragraphs, lists, blockquotes, code blocks, tables, and images all use that full column so prose aligns with the cover and media edges. Below the structural breakpoint the column naturally contracts with the viewport gutter.
 
 **Breakpoints:** 640px (prose type scale), 768px (`md`, related-post grids), 900px (the main structural collapse — all multi-column layouts flatten, the header's actions hide and nav becomes a horizontally scrolling row, sidebars unstick), 1024px (`lg`, table of contents hides).
 
@@ -231,6 +231,8 @@ Vertical rhythm is driven by section: 48px between home sections, 72px between A
 **The Ink Rule Rule.** Section heads are underscored by a 2px solid `{colors.ink}` line — the single heaviest line in the system, and the only place a border exceeds 1px. It marks the start of a content region and nothing else. Every other division is a 1px hairline.
 
 **The Sticky-90 Rule.** The header is 66px tall and sticky. Anything else that sticks anchors at `top: 90px`, and prose headings carry `scroll-margin-top: 90px` so anchor links never land under the header.
+
+**The Market-First, Author-Led Rule.** 주가관찰 is the first category in both the global navigation and the home's numbered sections, but automated market posts never populate the authored featured hero or the authored latest feed.
 
 ## Elevation & Depth
 
@@ -286,7 +288,9 @@ Cover art is fixed at 1200×630 (the OG standard), and every surface that displa
 
 ### Navigation
 
-Sticky, 66px tall, translucent paper at 82% with a 14px blur and a 1px Line bottom border. Links are 15px/600 in Ink, shifting to Signal Blue on hover over 0.15s. The active link additionally draws a 2px Signal Blue bar inset 12px from each side, 3px above the baseline of the header. Below 900px the header wraps to two rows: brand and actions on the first, nav on a full-width horizontally scrollable second row; the actions cluster hides entirely.
+Sticky, 66px tall, translucent paper at 82% with a 14px blur and a 1px Line bottom border. Links are 15px/600 in Ink, shifting to Signal Blue on hover over 0.15s. The active link additionally draws a 2px Signal Blue bar inset 12px from each side, 3px above the baseline of the header. Below 900px the actions cluster hides, while the brand and horizontally scrollable navigation remain on one clipped row.
+
+Category navigation is market-first: 주가관찰 appears before the directly authored categories, and this order stays stable across responsive layouts. The primary header action remains the route to the complete post archive.
 
 Breadcrumbs on the article page are monospace 12px in Faint, slash-separated. The trailing crumb is the post title in Muted — set in Pretendard, not mono, because it is a human-written title rather than a fact, and truncated with an ellipsis so a long title cannot push the row.
 
