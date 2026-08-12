@@ -218,7 +218,7 @@ Two container widths, both centered with a symmetric gutter: `site-container` at
 
 The home page runs an asymmetric two-column layout — `1fr / 320px` with a 52px gap — where the sidebar is `position: sticky` at `top: 90px`. The article page inverts the ratio to `1fr / 196px`, the narrow rail holding a sticky table of contents that disappears below the `lg` breakpoint. The featured slot is a `1.05fr / 0.95fr` split — text marginally wider than its cover.
 
-The home route is an editorial index, not a uniform card grid. A cover-led split hero introduces the newest directly authored post, then numbered category sections begin with `01` 주가관찰. Every category section pairs one lead card with a compact list of the next entries; the remaining authored categories continue the sequence. The archive stays a single-column list of `172px / 1fr` cover-plus-text rows.
+The home route is an editorial index, not a uniform card grid. A cover-led split hero introduces the newest directly authored post, then the four authored categories form numbered sections from `01` to `04`. Each pairs one lead card with a compact list of the next entries. An unnumbered 주가관찰 ledger closes the main column as dense date/title/status rows rather than a lead card. The archive stays a single-column list of `172px / 1fr` cover-plus-text rows.
 
 The article column resolves to roughly 828px at desktop width. Paragraphs, lists, blockquotes, code blocks, tables, and images all use that full column so prose aligns with the cover and media edges. Below the structural breakpoint the column naturally contracts with the viewport gutter.
 
@@ -232,7 +232,7 @@ Vertical rhythm is driven by section: 48px between home sections, 72px between A
 
 **The Sticky-90 Rule.** The header is 66px tall and sticky. Anything else that sticks anchors at `top: 90px`, and prose headings carry `scroll-margin-top: 90px` so anchor links never land under the header.
 
-**The Market-First, Author-Led Rule.** 주가관찰 is the first category in both the global navigation and the home's numbered sections, but automated market posts never populate the authored featured hero or the authored latest feed.
+**The Market-Nav, Author-Led Rule.** 주가관찰 is the first category in global navigation but the final, unnumbered ledger on the home route. Automated market posts never populate the authored featured hero, authored category sections, or recent-post sidebar.
 
 ## Elevation & Depth
 
@@ -323,7 +323,7 @@ All four share a frame: 58px 66px padding, `space-between` column layout, a mono
 
 ### Market scan report
 
-The automated 주가관찰 post is a dense record, not a promotional stock dashboard. The market gate leads, sector `score` is visually primary while persistence, Stage2 ratio, and momentum remain subordinate reference values, and candidates never share a table with stocks that failed a condition. Monthly archive rows stay one-line and use frontmatter-derived status dots. Empty candidate output is a meaningful cash-holding result and uses the system's dashed empty-state treatment.
+The automated 주가관찰 post is a dense record, not a promotional stock dashboard. The market gate leads, sector `score` is visually primary while persistence, Stage2 ratio, and momentum remain subordinate reference values, and candidates never share a table with stocks that failed a condition. Home and monthly archive rows stay compact and use frontmatter-derived status dots. Empty candidate output is a meaningful cash-holding result and uses the system's dashed empty-state treatment.
 
 ## Do's and Don'ts
 

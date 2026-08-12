@@ -12,11 +12,11 @@ import { getAllPosts } from "@/lib/posts";
 import type { Post } from "@/types/post";
 
 const HOME_DESIGN_CONTRACT = `<!--
-THESIS: Daily market scans lead the archive without displacing authored work; reject the uniform card grid.
+THESIS: Authored categories lead the home while daily market scans close it as a compact ledger; reject the market hero card.
 OWN-WORLD: Paper grey, white hairline surfaces, signal blue, numbered editorial sections, and cover-led stories.
-STORY: Meet the latest authored post, inspect the newest scan, then browse each writing category.
-FIRST VIEWPORT: Market-first navigation above a split featured story with the primary archive action in the header.
-FORM: Approved Taewoong.dev.dc.html composition; seed home-dc-20260812.
+STORY: Meet the latest authored post, browse each writing category, then scan the newest market records.
+FIRST VIEWPORT: Market-first navigation above a split authored story with the primary archive action in the header.
+FORM: Approved Taewoong.dev.dc.html (2) composition; seed home-dc-20260812-market-ledger.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`;
 
@@ -48,7 +48,7 @@ function MoreLink({ href }: { href: string }) {
   );
 }
 
-function HomeFeedList({ posts, market = false }: { posts: Post[]; market?: boolean }) {
+function HomeFeedList({ posts }: { posts: Post[] }) {
   if (posts.length === 0) {
     return (
       <div className="home-feed-list home-feed-list--empty">
@@ -63,15 +63,11 @@ function HomeFeedList({ posts, market = false }: { posts: Post[]; market?: boole
       {posts.map((post) => (
         <Link key={post.slug} href={`/posts/${post.slug}`} className="home-feed-row">
           <span className="home-feed-row__title-line">
-            {market ? (
-              <i className={`home-market-dot home-market-dot--${marketState(post)}`} aria-hidden="true" />
-            ) : null}
             <strong>{post.title}</strong>
           </span>
           <span className="home-feed-row__excerpt">{post.description}</span>
           <span className="home-feed-row__meta">
-            {formatDate(post.date)}
-            {market ? null : ` · ${readingTime(post.content)}`}
+            {formatDate(post.date)} · {readingTime(post.content)}
           </span>
         </Link>
       ))}
@@ -86,40 +82,29 @@ function marketState(post: Post) {
 }
 
 function MarketSection({ posts }: { posts: Post[] }) {
-  const [lead, ...rest] = posts;
-
   return (
-    <section className="home-section" aria-labelledby="home-market-heading">
-      <header className="home-section-head">
-        <span className="home-section-head__index">01</span>
+    <section className="home-section home-market-section" aria-labelledby="home-market-heading">
+      <header className="home-section-head home-section-head--market">
         <h2 id="home-market-heading">주가관찰</h2>
         <span className="home-section-head__meta">STOCK SCREENER · {posts.length}</span>
         <MoreLink href="/posts/market" />
       </header>
 
-      {lead ? (
-        <div className="home-section-grid">
-          <Link href={`/posts/${lead.slug}`} className="home-lead-card home-market-card">
-            <div className="home-market-card__signal">
-              <strong>{lead.candidateCount ?? "—"}</strong>
-              <span className="home-market-card__facts">
-                <b>후보 종목</b>
-                <span>
-                  <i
-                    className={`home-market-dot home-market-dot--${marketState(lead)}`}
-                    aria-hidden="true"
-                  />
-                  게이트 {lead.gate ?? "미집계"}
-                </span>
+      {posts.length > 0 ? (
+        <div className="home-market-list">
+          {posts.slice(0, 5).map((post) => (
+            <Link key={post.slug} href={`/posts/${post.slug}`} className="home-market-row">
+              <i
+                className={`home-market-dot home-market-dot--${marketState(post)}`}
+                aria-hidden="true"
+              />
+              <time dateTime={post.date}>{formatDate(post.date)}</time>
+              <strong>{post.title}</strong>
+              <span>
+                후보 {post.candidateCount ?? "—"}개 · 게이트 {post.gate ?? "미집계"}
               </span>
-            </div>
-            <div className="home-lead-card__body">
-              <h3>{lead.title}</h3>
-              <p>{lead.description}</p>
-              <span className="home-lead-card__meta">{formatDate(lead.date)}</span>
-            </div>
-          </Link>
-          <HomeFeedList posts={rest.slice(0, 3)} market />
+            </Link>
+          ))}
         </div>
       ) : (
         <div className="home-section-empty">
@@ -188,7 +173,7 @@ export default function Home() {
   return (
     <div className="home-page">
       <template
-        data-design-contract="home-dc-20260812"
+        data-design-contract="home-dc-20260812-market-ledger"
         dangerouslySetInnerHTML={{ __html: HOME_DESIGN_CONTRACT }}
       />
 
@@ -228,7 +213,6 @@ export default function Home() {
 
       <div className="site-container home-layout">
         <main className="home-main">
-          <MarketSection posts={marketPosts} />
           {homeCategories.map((category, index) => {
             const sectionPosts = authoredPosts.filter(
               (post) => getCategoryByValue(post.category)?.slug === category.slug,
@@ -237,12 +221,13 @@ export default function Home() {
             return (
               <CategorySection
                 key={category.slug}
-                index={index + 2}
+                index={index + 1}
                 category={category}
                 posts={sectionPosts}
               />
             );
           })}
+          <MarketSection posts={marketPosts} />
         </main>
 
         <aside className="sidebar home-sidebar">
